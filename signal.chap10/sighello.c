@@ -7,9 +7,10 @@ typedef void (*sighand)(int);
 
 static void handle(int sig)
 {
-    if (SIGUSR1 == sig)
+    if (SIGUSR1 == sig) {
         printf("USR1 received\n");
-    else if (SIGUSR2 ==sig)
+        sleep(20);
+    } else if (SIGUSR2 ==sig)
         printf("USR2 received\n");
     else 
         exit(0);
@@ -17,6 +18,7 @@ static void handle(int sig)
 
 int main(int argc, char* argv[])
 {
+    printf("pid=%d\n", getpid());
     if (SIG_ERR == signal(SIGUSR1, &handle)){
         perror("signal error");
         exit(1);
