@@ -41,7 +41,6 @@ int daemonize(char* cmd)
     sa.sa_flags = 0;
     if (sigaction(SIGHUP, &sa, NULL) < 0)
         err_sys("cant catch SIGHUP");
-    xlog("SIGHUP set");
     
     if ((pid=fork()) < 0) {
         err_sys("cant fork twice");
@@ -52,7 +51,6 @@ int daemonize(char* cmd)
 
     if (chdir("/") < 0)
         err_sys("cant chdir to /");
-    xlog("chdir to /");
 
     if (getrlimit(RLIMIT_NOFILE, &rl) < 0)
         err_sys("cant get getrlimit ");
@@ -60,18 +58,18 @@ int daemonize(char* cmd)
         rl.rlim_max = 1024;
     for (i=0; i<rl.rlim_max; ++i)
         close(i);
-    xlog("closed all fd");
 
     fd0 = open("/dev/null", O_RDWR);
     fd1 = dup(fd0);
     fd2 = dup(fd0);
-    xlog("dup 3 fd");
 
     openlog(cmd, LOG_CONS, LOG_DAEMON);
     if (fd0 != 0 || fd1 != 1 || fd2 != 2) {
         syslog(LOG_ERR, "unexpected fds: %d, %d, %d", fd0, fd1, fd2);
         exit(1);
     }
+    // setlogmask!
+    syslog(LOG_INFO, "app(%s) daemonized", cmd);
     if (execl(cmd, cmd, (char*)0) < 0) {
         exit(1);
     }

@@ -5,9 +5,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdarg.h>
+#include <fcntl.h>
 
 void err_sys(char*);
 void xlog(char* fmt, ...);
 
 void pr(char* fmt, ...);
+
+int lockfile(int fd);
+
 #endif

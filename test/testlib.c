@@ -23,10 +23,17 @@ static void test_err_sys()
     err_sys(s);
 }
 
+static void test_lockfile()
+{
+    printf("unimplemented test\n");
+    abort();
+}
+
 int main(int argc, char* argv[])
 {
     test_pr();
     test_xlog();
+    test_lockfile();
     test_err_sys();
     return 0;
 }
