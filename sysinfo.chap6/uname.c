@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include <sys/utsname.h>
 
+/**
+ * random string
+ * gnaixux157359ppp!@#$blaa
+ */
+
 void pr_uname(FILE* fp)
 {
     struct utsname buf;
