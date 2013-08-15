@@ -22,10 +22,6 @@ int main(int argc, char* argv[])
 
 int daemonize(char* cmd)
 {
-    FILE* fp = fopen("d.log", "w+");
-    fprintf(fp, "daemonized!\n");
-    fflush(fp);
-
     int i, fd0, fd1, fd2;
     pid_t pid=0;
     struct rlimit rl;
@@ -39,27 +35,24 @@ int daemonize(char* cmd)
         exit(0);
 
     setsid();
-    fprintf(fp, "after setsid\n");
 
     sa.sa_handler = SIG_IGN;
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = 0;
     if (sigaction(SIGHUP, &sa, NULL) < 0)
         err_sys("cant catch SIGHUP");
-    fprintf(fp, "line %d\n", __LINE__);
+    xlog("SIGHUP set");
     
     if ((pid=fork()) < 0) {
         err_sys("cant fork twice");
-        fprintf(fp, "fork err: %s\n", strerror(errno));
-        fflush(fp);
+        xlog("cant fork twice");
+        xlog(strerror(errno));
     }else if (pid > 0)
         exit(0);
-    fprintf(fp, "line %d\n", __LINE__);
-    fflush(fp);
 
     if (chdir("/") < 0)
         err_sys("cant chdir to /");
-    fprintf(fp, "after chdir\n");
+    xlog("chdir to /");
 
     if (getrlimit(RLIMIT_NOFILE, &rl) < 0)
         err_sys("cant get getrlimit ");
@@ -67,19 +60,19 @@ int daemonize(char* cmd)
         rl.rlim_max = 1024;
     for (i=0; i<rl.rlim_max; ++i)
         close(i);
-    fprintf(fp, "after close %d\n", i);
+    xlog("closed all fd");
 
     fd0 = open("/dev/null", O_RDWR);
     fd1 = dup(fd0);
     fd2 = dup(fd0);
-    fprintf(fp, "after dup\n");
+    xlog("dup 3 fd");
 
     openlog(cmd, LOG_CONS, LOG_DAEMON);
     if (fd0 != 0 || fd1 != 1 || fd2 != 2) {
         syslog(LOG_ERR, "unexpected fds: %d, %d, %d", fd0, fd1, fd2);
         exit(1);
     }
-    if (execlp(cmd, cmd, (char*)0) < 0) {
+    if (execl(cmd, cmd, (char*)0) < 0) {
         exit(1);
     }
     return 0;
