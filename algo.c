@@ -2,15 +2,20 @@
 #include <stdlib.h>
 #include <assert.h>
 
-typedef struct _Node {
+/* forward declaration
+ * just like function declaration
+ */
+typedef struct Node Node;
+struct Node {
     int val;
-    struct _Node * next;
-} Node;
+    Node * next;
+};
 
-typedef struct _List {
+typedef struct List List;
+struct List {
     int length;
     Node* head;
-} List;
+};
 
 Node* node_new(int val)
 {
