@@ -1,3 +1,6 @@
+/**
+ * useage: gcc -Wall -I. threads.chap11/hello.c lib.o -lpthread
+ */
 #ifndef _LIB_H_
 #define _LIB_H_
 
