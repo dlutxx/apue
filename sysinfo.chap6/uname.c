@@ -4,6 +4,7 @@
 /**
  * random string
  * gnaixux157359ppp!@#$blaa
+ * merrygmaillandE1github
  */
 
 void pr_uname(FILE* fp)
