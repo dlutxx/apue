@@ -6,6 +6,7 @@ from threading import Condition, Lock, Thread
 VAL = 0
 COND = Condition()
 DONE = False
+START = time.time()
 
 def Producer():
     global VAL, DONE
@@ -14,8 +15,9 @@ def Producer():
         COND.acquire()
         cnt += 1
         VAL += 1
-        COND.notify()
+        COND.notifyAll()
         COND.release()
+        time.sleep(0.01)
     else:
         DONE = True
         print "Producer Done"
@@ -27,15 +29,14 @@ def Consumer(id):
         COND.acquire()
         while VAL<1:
             COND.wait()
-        print "thread%d %d"%(id, VAL)
+        print "consumer %d %d"%(id, VAL)
         VAL -= 1
         COND.release()
         p += 1
-        time.sleep(0.5)
-        '''if DONE:
-            print "consumer done: ", p
+        time.sleep(0.1)
+        if time.time()-5>START:
+            print "consumer %d done"% id
             break
-        '''
 
 print "PID : ", os.getpid()
 
