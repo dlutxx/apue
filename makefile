@@ -1,6 +1,6 @@
 OBJS = lib.o
 
-ifeq (1, $(MAKELEVEL))
+ifeq (0, $(MAKELEVEL))
 whoami := $(shell whoami)
 arch := $(shell arch)
 endif
